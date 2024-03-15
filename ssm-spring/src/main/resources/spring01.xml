@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--
+        IOC(Inverse Of Control)：以前对象是在应用程序中创建和调用,现在都交给IOC容器管理,即"反转"了控制权
+        组件交给Spring管理的优势：降低耦合度,方便配置和管理,可以享受Spring的其他功能,比如AOP和声明式事务TX
+        IOC底层原理: 工厂模式 + xml解析 + 反射,相当于工厂模式的升级版
+        IOC思想基于IOC容器完成,IOC容器就是对象工厂,Spring提供了两种实现方式
+        BeanFactory：Spring内部接口,不提供给开发人员使用,加载配置文件时不会创建对象,获取bean时才会创建
+        ApplicationContext：是其子接口,提供更多功能给开发人员使用,加载配置文件时就创建好配置的所有bean对象,耗时操作在项目启动时就完成
+        ApplicationContext ioc = new ClassPathXmlApplicationContext("spring01.xml");
+        Demo demo = ioc.getBean(Demo.class);
+        反射是调用类的无参构造创建对象,所以bean只能是类类型不能是接口类型,类默认提供无参构造,如果自定义有参构造则不再提供无参构造
+        Class<?> clazz = Class.forName("com.okccc.pojo.Demo");
+        Object o = clazz.newInstance();
+        DI(Dependency Injection)：依赖注入,组件之间的依赖关系由IOC容器管理,比如在UserService中注入UserDao,包括set注入和构造函数注入
+    -->
+</beans>
