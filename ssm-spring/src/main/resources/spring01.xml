@@ -17,4 +17,7 @@
         Object o = clazz.newInstance();
         DI(Dependency Injection)：依赖注入,组件之间的依赖关系由IOC容器管理,比如在UserService中注入UserDao,包括set注入和构造函数注入
     -->
+
+    <!-- 基于xml管理bean(了解) -->
+    <bean id="demo" class="com.okccc.pojo.Demo"/>
 </beans>
