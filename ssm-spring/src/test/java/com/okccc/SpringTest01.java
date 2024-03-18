@@ -2,6 +2,7 @@ package com.okccc;
 
 import com.okccc.pojo.A;
 import com.okccc.pojo.Demo;
+import com.okccc.pojo.Emp;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -38,5 +39,20 @@ public class SpringTest01 {
         // 根据id和类型获取bean,当IOC容器中指定类型的bean不止一个时使用
         Demo bean03 = ioc.getBean("demo", Demo.class);
         System.out.println(bean03);
+    }
+
+    @Test
+    public void testDI() {
+        // setter方法赋值
+        Emp emp01 = ioc.getBean("emp01", Emp.class);
+        System.out.println(emp01);
+
+        // 构造器赋值
+        Emp emp02 = ioc.getBean("emp02", Emp.class);
+        System.out.println(emp02);
+
+        // 命名空间赋值
+        Emp emp03 = ioc.getBean("emp03", Emp.class);
+        System.out.println(emp03);
     }
 }

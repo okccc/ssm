@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
 
     <!--
         IOC(Inverse Of Control)：以前对象是在应用程序中创建和调用,现在都交给IOC容器管理,即"反转"了控制权
@@ -20,4 +21,95 @@
 
     <!-- 基于xml管理bean(了解) -->
     <bean id="demo" class="com.okccc.pojo.Demo"/>
+
+    <!-- 配置bean对象并通过setter方法赋值 -->
+    <bean id="emp01" class="com.okccc.pojo.Emp">
+        <!-- 点击属性名就会发现是调用setXxx() -->
+        <property name="empId" value="1"/>
+        <!-- 特殊符号&lt;&gt;或者直接使用CDATA区表示 -->
+        <!--        <property name="empName" value="a &lt; b"/>-->
+        <property name="empName">
+            <value><![CDATA[a < b]]></value>
+        </property>
+        <property name="age" value="18"/>
+        <!-- null值是通过标签表示而不是字符串 -->
+        <property name="sex">
+            <null/>
+        </property>
+        <!-- 为类类型属性赋值 -->
+        <!-- 方式1：引用外部bean -->
+        <property name="dept" ref="dept01"/>
+        <!-- 方式2：添加内部bean,内部bean只能用于属性赋值,无法在外部通过IOC容器获取,所以id属性可以省略 -->
+        <!--        <property name="dept">-->
+        <!--            <bean class="com.okccc.pojo.Dept">-->
+        <!--                <property name="deptId" value="1"/>-->
+        <!--                <property name="deptName" value="销售部"/>-->
+        <!--            </bean>-->
+        <!--        </property>-->
+        <!-- 为数组类型属性赋值 -->
+        <property name="hobbies">
+            <array>
+                <value>movie</value>
+                <value>sport</value>
+            </array>
+        </property>
+        <!-- 为Map集合类型属性赋值 -->
+        <!-- 方式1：引用外部bean -->
+        <property name="games" ref="gameMap"/>
+        <!-- 方式2：添加map标签 -->
+        <!--        <property name="games">-->
+        <!--            <map>-->
+        <!--                <entry key="1" value-ref="game01"/>-->
+        <!--                <entry key="2" value-ref="game02"/>-->
+        <!--            </map>-->
+        <!--        </property>-->
+    </bean>
+
+    <bean id="dept01" class="com.okccc.pojo.Dept">
+        <property name="deptId" value="1"/>
+        <property name="deptName" value="技术部"/>
+        <!-- 为List集合类型属性赋值 -->
+        <!-- 方式1：引用外部bean -->
+        <property name="emps" ref="empList"/>
+        <!-- 方式2：添加list标签 -->
+        <!--        <property name="emps">-->
+        <!--            <list>-->
+        <!--                <ref bean="emp01"/>-->
+        <!--                <ref bean="emp02"/>-->
+        <!--            </list>-->
+        <!--        </property>-->
+    </bean>
+
+    <bean id="game01" class="com.okccc.pojo.Game">
+        <property name="id" value="1"/>
+        <property name="name" value="WAR3"/>
+    </bean>
+
+    <bean id="game02" class="com.okccc.pojo.Game">
+        <property name="id" value="2"/>
+        <property name="name" value="LOL"/>
+    </bean>
+
+    <!-- list集合类型的bean -->
+    <util:list id="empList">
+        <ref bean="emp02"/>
+        <ref bean="emp03"/>
+    </util:list>
+
+    <!-- map集合类型的bean -->
+    <util:map id="gameMap">
+        <entry key="1" value-ref="game01"/>
+        <entry key="2" value-ref="game02"/>
+    </util:map>
+
+    <!-- 配置bean对象并通过构造器赋值 -->
+    <bean id="emp02" class="com.okccc.pojo.Emp">
+        <constructor-arg name="empId" value="2"/>
+        <constructor-arg name="empName" value="moon"/>
+        <constructor-arg name="age" value="20"/>
+        <constructor-arg name="sex" value="女"/>
+    </bean>
+
+    <!-- 使用p命名空间,p:empId表示字面量类型,p:empId-ref表示类类型 -->
+    <bean id="emp03" class="com.okccc.pojo.Emp" p:empId="3" p:empName="sky" p:games-ref="gameMap"/>
 </beans>
