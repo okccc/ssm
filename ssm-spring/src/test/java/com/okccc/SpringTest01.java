@@ -3,6 +3,7 @@ package com.okccc;
 import com.okccc.pojo.A;
 import com.okccc.pojo.Demo;
 import com.okccc.pojo.Emp;
+import com.okccc.pojo.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -54,5 +55,15 @@ public class SpringTest01 {
         // 命名空间赋值
         Emp emp03 = ioc.getBean("emp03", Emp.class);
         System.out.println(emp03);
+    }
+
+    @Test
+    public void testScope() {
+        // bean的作用域和生命周期,ConfigurableApplicationContext子接口提供了容器的刷新和关闭功能
+        ClassPathXmlApplicationContext ioc = new ClassPathXmlApplicationContext("spring01.xml");
+        User bean01 = ioc.getBean("user", User.class);
+        User bean02 = ioc.getBean("user", User.class);
+        System.out.println(bean01 == bean02);
+        ioc.close();
     }
 }

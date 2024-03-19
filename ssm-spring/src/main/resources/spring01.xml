@@ -112,4 +112,23 @@
 
     <!-- 使用p命名空间,p:empId表示字面量类型,p:empId-ref表示类类型 -->
     <bean id="emp03" class="com.okccc.pojo.Emp" p:empId="3" p:empName="sky" p:games-ref="gameMap"/>
+
+    <!--
+        bean的作用域
+        scope="singleton"：bean在IOC容器中只有一个实例,IOC容器初始化时就创建好对象(默认)
+        scope="prototype"：bean在IOC容器中可以有多个实例,因为每个实例都不一样,所以调用getBean()时才会创建对象使用
+
+        bean的生命周期
+        1.实例化：反射会调用类的无参构造创建bean对象
+        2.依赖注入：property标签给bean对象的属性赋值
+        3.初始化：bean对象初始化,init-method属性指定
+        4.销毁：destroy-method属性指定,IOC容器关闭时才会销毁
+        如果scope="singleton",生命周期的前三个步骤是在获取IOC容器时执行
+        如果scope="prototype",生命周期的前三个步骤是在获取bean对象时执行,并且此时bean对象销毁不由IOC容器控制
+    -->
+    <bean id="user" class="com.okccc.pojo.User" scope="prototype" init-method="init" destroy-method="destroy">
+        <property name="userId" value="1"/>
+        <property name="username" value="grubby"/>
+        <property name="balance" value="100"/>
+    </bean>
 </beans>
