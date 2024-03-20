@@ -131,4 +131,11 @@
         <property name="username" value="grubby"/>
         <property name="balance" value="100"/>
     </bean>
+
+    <!--
+        FactoryBean是Spring提供的一种整合第三方框架的常用机制,可以隐藏复杂组件的创建过程
+        将FactoryBean接口的实现类配置成bean对象,会将其getObject()方法返回的对象交给IOC容器管理
+        Spring整合Mybatis就是通过mybatis-spring包提供的sqlSessionFactoryBean创建SqlSessionFactory对象
+     -->
+    <bean id="userFactoryBean" class="com.okccc.factory.UserFactoryBean"/>
 </beans>

@@ -66,4 +66,11 @@ public class SpringTest01 {
         System.out.println(bean01 == bean02);
         ioc.close();
     }
+
+    @Test
+    public void testFactoryBean() {
+        // FactoryBean
+        User bean = ioc.getBean("userFactoryBean", User.class);
+        System.out.println(bean);
+    }
 }
