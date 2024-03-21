@@ -1,5 +1,6 @@
 package com.okccc;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.okccc.pojo.A;
 import com.okccc.pojo.Demo;
 import com.okccc.pojo.Emp;
@@ -72,5 +73,12 @@ public class SpringTest01 {
         // FactoryBean
         User bean = ioc.getBean("userFactoryBean", User.class);
         System.out.println(bean);
+    }
+
+    @Test
+    public void testDruidDataSource() {
+        // DruidDataSource
+        DruidDataSource druidDataSource = ioc.getBean("druidDataSource", DruidDataSource.class);
+        System.out.println(druidDataSource);
     }
 }
