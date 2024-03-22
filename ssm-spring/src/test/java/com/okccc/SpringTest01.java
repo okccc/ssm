@@ -1,13 +1,14 @@
 package com.okccc;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.okccc.pojo.A;
-import com.okccc.pojo.Demo;
-import com.okccc.pojo.Emp;
-import com.okccc.pojo.User;
+import com.okccc.pojo.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.List;
 
 /**
  * @Author: okccc
@@ -80,5 +81,38 @@ public class SpringTest01 {
         // DruidDataSource
         DruidDataSource druidDataSource = ioc.getBean("druidDataSource", DruidDataSource.class);
         System.out.println(druidDataSource);
+    }
+
+    @Test
+    public void testJdbcTemplate() {
+        // JdbcTemplate实现增删改查
+        JdbcTemplate jdbcTemplate = ioc.getBean(JdbcTemplate.class);
+
+        // insert
+        String sql01 = "insert into ssm.user values(null, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql01, "fly", "123456", 20, "男", "hum@qq.com");
+
+        // update
+        String sql02 = "update ssm.user set password = ? where username = ?";
+        jdbcTemplate.update(sql02, "orc002", "fly");
+
+        // delete
+        String sql03 = "delete from ssm.user where username = ?";
+        jdbcTemplate.update(sql03, "th000");
+
+        // 查询单行单列
+        String sql06 = "select count(*) from ssm.user";
+        Integer cnt = jdbcTemplate.queryForObject(sql06, Integer.class);
+        System.out.println(cnt);
+
+        // 查询单个对象
+        String sql04 = "select * from ssm.game where id = ?";
+        Game game = jdbcTemplate.queryForObject(sql04, new BeanPropertyRowMapper<>(Game.class), 1);
+        System.out.println(game);
+
+        // 查询多个对象集合
+        String sql05 = "select * from ssm.game";
+        List<Game> list = jdbcTemplate.query(sql05, new BeanPropertyRowMapper<>(Game.class));
+        list.forEach(System.out::println);
     }
 }
