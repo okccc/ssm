@@ -153,4 +153,22 @@
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="druidDataSource"/>
     </bean>
+
+    <!--
+        基于xml的自动装配(了解)：自动为bean中的类类型或接口类型的属性赋值
+        autowire="default"：不装配,使用属性的默认值,直接报错NullPointerException
+        autowire="byType"：根据要赋值属性的类型在IOC容器中匹配某个bean,容器中只能有一个匹配的类型
+        autowire="byName"：根据要赋值属性的名字作为bean的id在IOC容器中匹配,容器中可以有多个匹配的类型
+    -->
+    <bean id="userController" class="com.okccc.controller.UserController" autowire="byType">
+        <!-- 使用setter方法或有参构造进行依赖注入 -->
+        <property name="userService" ref="userService"/>
+<!--        <constructor-arg name="userService" ref="userService"/>-->
+    </bean>
+    <bean id="userService" class="com.okccc.service.impl.UserServiceImpl" autowire="byName">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+    <bean id="userDao" class="com.okccc.dao.impl.UserDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
 </beans>

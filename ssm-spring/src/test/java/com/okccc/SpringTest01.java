@@ -1,6 +1,7 @@
 package com.okccc;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.okccc.controller.UserController;
 import com.okccc.pojo.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
@@ -114,5 +115,12 @@ public class SpringTest01 {
         String sql05 = "select * from ssm.game";
         List<Game> list = jdbcTemplate.query(sql05, new BeanPropertyRowMapper<>(Game.class));
         list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testIocByXml() {
+        // 基于xml方式管理bean
+        UserController userController = ioc.getBean(UserController.class);
+        userController.queryAll();
     }
 }
