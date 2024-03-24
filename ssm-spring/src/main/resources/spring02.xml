@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--
+        基于注解管理bean(推荐)
+        注解：给类、属性、方法、构造器添加标记,@Component普通类、@Controller控制层、@Service业务层、@Repository持久层
+        扫描：Spring会扫描包下添加注解的类并将其作为组件进行管理,IOC容器会自动配置该类的bean,id默认是类的小驼峰,也可以自定义但没必要
+        由于bean的class只能是类类型,所以是给UserServiceImpl/UserDaoImpl添加注解而不是UserService/UserDao
+        UserServiceImpl标记@Service等同于<bean id="userServiceImpl" class="com.okccc.service.impl.UserServiceImpl"/>
+        自定义的类可以添加注解,但是第三方jar包提供的类是read-only无法添加注解,仍然需要使用xml,所以后面会继续优化使用配置类代替
+        SpringMVC扫描控制层,Spring扫描其它层,所以需要分开防止重复扫描
+        context:exclude-filter：排除扫描,搭配use-default-filters="true"(包下所有类都要扫描)
+        context:include-filter：包含扫描,搭配use-default-filters="false"(包下所有类都不扫描)
+    -->
+    <!-- 自定义的类可以使用组件扫描 -->
+    <context:component-scan base-package="com.okccc" use-default-filters="true">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+<!--        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>-->
+    </context:component-scan>
+
+    <!-- 第三方类依然需要使用bean标签配置,可在配置类使用@Bean代替 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <bean id="druidDataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="druidDataSource"/>
+    </bean>
+</beans>
