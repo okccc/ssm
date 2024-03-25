@@ -14,12 +14,24 @@
         SpringMVC扫描控制层,Spring扫描其它层,所以需要分开防止重复扫描
         context:exclude-filter：排除扫描,搭配use-default-filters="true"(包下所有类都要扫描)
         context:include-filter：包含扫描,搭配use-default-filters="false"(包下所有类都不扫描)
+
+        基于注解的自动装配(推荐)
+        问题：随着bean对象的增加,使用<property>和<constructor-arg>进行依赖注入会导致xml越来越大,不好维护
+        解决：使用@Autowired标记成员变量(注入对象),比xml自动装配更精简,也可以标记setter方法或有参构造但很少用
+        @Autowired原理
+        a.默认通过byType方式进行自动装配,根据类型获取bean(常用,一般相同类型的bean只有一个,不会出现下面几种情况)
+        b.如果有多个类型匹配的bean,就自动转换成byName方式,根据id和类型获取bean(很少用)
+        c.如果有多个类型匹配的bean,且这些bean的id和属性名都不一致,就要给该属性添加@Qualifier注解指定某个bean的id(很少用)
+        d.如果没有类型匹配的bean则抛异常NoSuchBeanDefinitionException,因为@Autowired(required=true)要求必须完成自动装配(很少用)
     -->
     <!-- 自定义的类可以使用组件扫描 -->
     <context:component-scan base-package="com.okccc" use-default-filters="true">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
 <!--        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>-->
     </context:component-scan>
+    <!-- 设置干扰选项验证@Autowired原理 -->
+    <bean id="service" class="com.okccc.service.impl.UserServiceImpl"/>
+    <bean id="userService" class="com.okccc.service.impl.UserServiceImpl"/>
 
     <!-- 第三方类依然需要使用bean标签配置,可在配置类使用@Bean代替 -->
     <context:property-placeholder location="classpath:jdbc.properties"/>

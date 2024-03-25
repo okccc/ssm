@@ -119,7 +119,7 @@ public class SpringTest01 {
 
     @Test
     public void testIocByXml() {
-        // 基于xml方式管理bean
+        // 基于xml的自动装配
         UserController userController = ioc.getBean(UserController.class);
         userController.queryAll();
     }

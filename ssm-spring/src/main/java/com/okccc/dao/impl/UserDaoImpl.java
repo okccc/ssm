@@ -2,15 +2,17 @@ package com.okccc.dao.impl;
 
 import com.okccc.dao.UserDao;
 import com.okccc.pojo.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * @Author: okccc
  * @Date: 2023/10/4 10:15:52
- * @Desc: 基于xml的自动装配(了解)
+ * @Desc:
  *
  * CREATE TABLE `t_user` (
  *   `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -21,13 +23,11 @@ import java.util.List;
  *
  * insert into `t_user` values (1,'admin',50);
  */
+@Repository
 public class UserDaoImpl implements UserDao {
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<User> queryAll() {
@@ -35,3 +35,19 @@ public class UserDaoImpl implements UserDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 }
+
+// 基于xml的自动装配(了解)
+//public class UserDaoImpl implements UserDao {
+//
+//    private JdbcTemplate jdbcTemplate;
+//
+//    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+//        this.jdbcTemplate = jdbcTemplate;
+//    }
+//
+//    @Override
+//    public List<User> queryAll() {
+//        String sql = "select * from ssm.t_user";
+//        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+//    }
+//}

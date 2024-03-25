@@ -2,16 +2,18 @@ package com.okccc;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.okccc.config.SpringConfig;
+import com.okccc.controller.UserController;
 import com.okccc.factory.UserFactoryBean;
 import com.okccc.pojo.Demo;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+
 /**
  * @Author: okccc
  * @Date: 2023/10/4 11:21:10
- * @Desc: 基于配置类+注解方式管理bean
+ * @Desc: 基于注解方式管理bean
  */
 public class SpringTest02 {
 
@@ -24,5 +26,12 @@ public class SpringTest02 {
         System.out.println(ioc.getBean(UserFactoryBean.class));
         System.out.println(ioc.getBean(DruidDataSource.class));
         System.out.println(ioc.getBean(JdbcTemplate.class));
+    }
+
+    @Test
+    public void testIocByAnnotation() {
+        // 基于注解的自动装配
+        UserController userController = ioc.getBean(UserController.class);
+        userController.queryAll();
     }
 }
