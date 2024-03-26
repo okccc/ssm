@@ -5,10 +5,13 @@ import com.okccc.config.SpringConfig;
 import com.okccc.controller.UserController;
 import com.okccc.factory.UserFactoryBean;
 import com.okccc.pojo.Demo;
+import com.okccc.proxy.Calculator;
+import com.okccc.proxy.CalculatorImpl;
+import com.okccc.proxy.CalculatorStaticProxy;
+import com.okccc.proxy.ProxyFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 
 /**
  * @Author: okccc
@@ -33,5 +36,24 @@ public class SpringTest02 {
         // 基于注解的自动装配
         UserController userController = ioc.getBean(UserController.class);
         userController.queryAll();
+    }
+
+    @Test
+    public void testProxy() {
+        // 目标类自己实现
+        CalculatorImpl target = new CalculatorImpl();
+        System.out.println(target.add(10, 20));
+
+        // 使用静态代理实现
+        CalculatorStaticProxy staticProxy = new CalculatorStaticProxy(target);
+        System.out.println(staticProxy.add(10, 20));
+
+        // 使用动态代理实现
+        ProxyFactory proxyFactory = new ProxyFactory(target);
+        // jdk动态代理必须使用接口类型接收,因为目标类和代理类是兄弟关系类加载器不一样(ArrayList和LinkedList都实现了List接口)
+        // java.lang.ClassCastException: class jdk.proxy2.$Proxy39 cannot be cast to class com.okccc.proxy.CalculatorImpl
+//        CalculatorImpl dynamicProxy = (CalculatorImpl) proxyFactory.getProxy();
+        Calculator dynamicProxy = (Calculator) proxyFactory.getProxy();
+        System.out.println(dynamicProxy.add(10, 20));
     }
 }
