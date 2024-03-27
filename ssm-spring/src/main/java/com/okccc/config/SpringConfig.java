@@ -33,6 +33,7 @@ import javax.sql.DataSource;
 @Configuration                                // 使用注解标记为配置类
 @ComponentScan(basePackages = {"com.okccc"})  // 使用注解扫描指定组件,代替<context:component-scan>标签
 @PropertySource("classpath:jdbc.properties")  // 使用注解读取外部文件,代替<context:property-placeholder>标签
+@EnableAspectJAutoProxy                       // 使用注解开启Aspectj,代替<aop:aspectj-autoproxy>标签
 public class SpringConfig {
 
     @Value("${jdbc.driver}")

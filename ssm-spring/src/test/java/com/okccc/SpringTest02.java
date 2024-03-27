@@ -5,10 +5,7 @@ import com.okccc.config.SpringConfig;
 import com.okccc.controller.UserController;
 import com.okccc.factory.UserFactoryBean;
 import com.okccc.pojo.Demo;
-import com.okccc.proxy.Calculator;
-import com.okccc.proxy.CalculatorImpl;
-import com.okccc.proxy.CalculatorStaticProxy;
-import com.okccc.proxy.ProxyFactory;
+import com.okccc.proxy.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -55,5 +52,18 @@ public class SpringTest02 {
 //        CalculatorImpl dynamicProxy = (CalculatorImpl) proxyFactory.getProxy();
         Calculator dynamicProxy = (Calculator) proxyFactory.getProxy();
         System.out.println(dynamicProxy.add(10, 20));
+    }
+
+    @Test
+    public void testAop() {
+        // 可以打断点Debug观察AOP的底层实现
+        // 1.目标类有接口使用jdk动态代理,接口类型接收,因为放入IOC容器的对象并不是目标类而是代理类(看不到但存在)
+        // NoSuchBeanDefinitionException: No qualifying bean of type 'com.okccc.proxy.CalculatorImpl' available
+//        CalculatorImpl calculator = ioc.getBean(CalculatorImpl.class);
+        Calculator calculator = ioc.getBean(Calculator.class);
+        calculator.add(10, 20);
+        // 2.目标类没有接口使用cglib动态代理,类类型接收
+        CalculatorDemo calculatorDemo = ioc.getBean(CalculatorDemo.class);
+        calculatorDemo.add(10, 20);
     }
 }
