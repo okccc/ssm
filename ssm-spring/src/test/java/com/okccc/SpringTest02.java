@@ -8,6 +8,7 @@ import com.okccc.pojo.Demo;
 import com.okccc.proxy.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -56,7 +57,6 @@ public class SpringTest02 {
 
     @Test
     public void testAop() {
-        // 可以打断点Debug观察AOP的底层实现
         // 1.目标类有接口使用jdk动态代理,接口类型接收,因为放入IOC容器的对象并不是目标类而是代理类(看不到但存在)
         // NoSuchBeanDefinitionException: No qualifying bean of type 'com.okccc.proxy.CalculatorImpl' available
 //        CalculatorImpl calculator = ioc.getBean(CalculatorImpl.class);
@@ -65,5 +65,14 @@ public class SpringTest02 {
         // 2.目标类没有接口使用cglib动态代理,类类型接收
         CalculatorDemo calculatorDemo = ioc.getBean(CalculatorDemo.class);
         calculatorDemo.add(10, 20);
+        // 可以打断点Debug观察AOP的底层实现
+    }
+
+    @Test
+    public void testTxByXml() {
+        // 基于xml的声明式事务
+        ClassPathXmlApplicationContext ioc = new ClassPathXmlApplicationContext("spring02.xml");
+        UserController userController = ioc.getBean(UserController.class);
+        userController.buyBook(1, 1);
     }
 }

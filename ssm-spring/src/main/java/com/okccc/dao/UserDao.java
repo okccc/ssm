@@ -15,4 +15,19 @@ public interface UserDao {
      * 查询所有用户
      */
     List<User> queryAll();
+
+    /**
+     * 根据id查询图书价格
+     */
+    Double getPriceByBookId(Integer bookId);
+
+    /**
+     * 更新图书库存
+     */
+    void updateStock(Integer bookId);
+
+    /**
+     * 更新用户余额
+     */
+    void updateBalance(Integer userId, Double price);
 }

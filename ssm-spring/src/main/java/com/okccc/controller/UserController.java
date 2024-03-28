@@ -32,6 +32,10 @@ public class UserController {
         List<User> users = userService.queryAll();
         System.out.println(users);
     }
+
+    public void buyBook(int userId, int bookId) {
+        userService.buyBook(userId, bookId);
+    }
 }
 
 // 基于xml的自动装配(了解)

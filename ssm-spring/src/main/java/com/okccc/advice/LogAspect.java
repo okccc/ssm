@@ -75,7 +75,7 @@ public class LogAspect {
         System.out.println("[AOP后置通知] " + signature.getName() + " 方法执行完毕");
     }
 
-    @Around("com.okccc.advice.PointCut.transactionPointCut()")
+//    @Around("com.okccc.advice.PointCut.transactionPointCut()")
     public Object aroundAdvice(ProceedingJoinPoint joinPoint) {
         // 环绕通知方法返回值要和目标方法返回值一致
         Object result;

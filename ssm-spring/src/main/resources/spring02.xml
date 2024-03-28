@@ -2,8 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!--
         基于注解管理bean(推荐)
@@ -55,4 +55,31 @@
     -->
     <!-- 开启Aspectj -->
     <aop:aspectj-autoproxy proxy-target-class="false"/>
+
+    <!--
+        Connection conn = ...;
+        try {
+            // 关闭自动提交事务
+            conn.setAutoCommit(false);
+            // 业务操作
+            ...
+            // 手动提交事务
+            conn.commit();
+        } catch (Exception e) {
+            // 回滚事务
+            conn.rollBack();
+        } finally {
+            // 释放连接
+            conn.close();
+        }
+        编程式事务：所有操作都是硬编码实现,繁琐且没法复用
+        声明式事务：通过xml或注解控制事务的提交和回滚,将业务逻辑和事务控制分离,提高代码可读性和可维护性
+    -->
+    <!-- 配置事务管理器,相当于切面 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="druidDataSource"/>
+    </bean>
+
+    <!-- 开启事务管理,相当于通知,在处理业务逻辑的Service层的类或方法上添加@Transaction注解 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>
