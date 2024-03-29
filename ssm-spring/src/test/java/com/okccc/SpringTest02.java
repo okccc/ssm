@@ -10,12 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 /**
  * @Author: okccc
  * @Date: 2023/10/4 11:21:10
  * @Desc: 基于注解方式管理bean
  */
+@SpringJUnitConfig(value = {SpringConfig.class})  // 整合JUnit,不需要手动创建IOC容器中的bean,直接注入即可
 public class SpringTest02 {
 
     // 创建IOC容器,基于注解方式管理bean
