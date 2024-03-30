@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
@@ -34,6 +37,7 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = {"com.okccc"})  // 使用注解扫描指定组件,代替<context:component-scan>标签
 @PropertySource("classpath:jdbc.properties")  // 使用注解读取外部文件,代替<context:property-placeholder>标签
 @EnableAspectJAutoProxy                       // 使用注解开启Aspectj,代替<aop:aspectj-autoproxy>标签
+@EnableTransactionManagement                  // 使用注解开启事务管理,代替<tx:annotation-driven>标签
 public class SpringConfig {
 
     @Value("${jdbc.driver}")
@@ -65,5 +69,13 @@ public class SpringConfig {
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
+    }
+
+    /**
+     * 实例化DataSourceTransactionManager对象,需要注入IOC容器中的DataSource
+     */
+    @Bean
+    public TransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 }

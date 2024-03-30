@@ -7,6 +7,7 @@ import com.okccc.factory.UserFactoryBean;
 import com.okccc.pojo.Demo;
 import com.okccc.proxy.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -75,6 +76,14 @@ public class SpringTest02 {
         // 基于xml的声明式事务
         ClassPathXmlApplicationContext ioc = new ClassPathXmlApplicationContext("spring02.xml");
         UserController userController = ioc.getBean(UserController.class);
+        userController.buyBook(1, 1);
+    }
+
+    @Autowired
+    private UserController userController;
+    @Test
+    public void testTxByAnnotation() {
+        // 基于注解的声明式事务
         userController.buyBook(1, 1);
     }
 }
