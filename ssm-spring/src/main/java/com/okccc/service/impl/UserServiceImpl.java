@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @Author: okccc
  * @Date: 2023/10/4 10:14:45
- * @Desc:
+ * @Desc: 事务属性之只读、超时、回滚策略、隔离级别、传播行为
  *
  * 事务处理
  * 事务就是对表的更新操作,使数据从一种状态变换到另一种状态
@@ -40,7 +40,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional()
+    @Transactional(
+            // @Transactional注解通常是加在类上使所有方法都有事务,在方法上重新定义@Transactional会将其覆盖
+            // 只读：明确告诉数据库当前操作不涉及写操作,这样数据库就能针对查询操作进行优化
+            // DML操作设置只读模式会抛异常 Connection is read-only. Queries leading to data modification are not allowed
+            readOnly = true
+    )
     public void buyBook(int userId, int bookId) {
         // 查询图书价格
         Double price = userDao.getPriceByBookId(bookId);
