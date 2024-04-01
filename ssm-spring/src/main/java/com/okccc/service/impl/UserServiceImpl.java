@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: okccc
@@ -44,9 +45,20 @@ public class UserServiceImpl implements UserService {
             // @Transactional注解通常是加在类上使所有方法都有事务,在方法上重新定义@Transactional会将其覆盖
             // 只读：明确告诉数据库当前操作不涉及写操作,这样数据库就能针对查询操作进行优化
             // DML操作设置只读模式会抛异常 Connection is read-only. Queries leading to data modification are not allowed
-            readOnly = true
+            readOnly = false,
+
+            // 超时：因为某些问题导致程序卡住会长时间占用数据库连接,应该超时回滚及时释放资源,默认-1永不超时
+            // Transaction timed out: deadline was Tue Nov 08 18:23:36 CST 2022
+            timeout = 3
     )
     public void buyBook(int userId, int bookId) {
+        try {
+            // 睡眠5秒验证事务超时
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // 查询图书价格
         Double price = userDao.getPriceByBookId(bookId);
 
