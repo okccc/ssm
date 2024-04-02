@@ -49,12 +49,17 @@ public class UserServiceImpl implements UserService {
 
             // 超时：因为某些问题导致程序卡住会长时间占用数据库连接,应该超时回滚及时释放资源,默认-1永不超时
             // Transaction timed out: deadline was Tue Nov 08 18:23:36 CST 2022
-            timeout = 3
+            timeout = 3,
+
+            // 回滚策略：声明式事务默认只对运行时异常回滚,编译时异常不回滚,可以手动配置
+            // a.出现运行时异常ArithmeticException会回滚,更新库存和更新余额皆失败
+            // b.出现编译时异常FileNotFoundException不会回滚,更新库存和更新余额皆成功
+            rollbackFor = Exception.class, noRollbackFor = ArithmeticException.class
     )
     public void buyBook(int userId, int bookId) {
         try {
             // 睡眠5秒验证事务超时
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -67,6 +72,10 @@ public class UserServiceImpl implements UserService {
 
         // 更新用户余额
         userDao.updateBalance(userId, price);
+
+        // 验证事务回滚策略
+//        new FileInputStream("a.txt");  // 编译时异常
+//        System.out.println(1/0);  // 运行时异常
     }
 }
 
