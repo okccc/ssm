@@ -5,6 +5,7 @@ import com.okccc.pojo.User;
 import com.okccc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -54,7 +55,10 @@ public class UserServiceImpl implements UserService {
             // 回滚策略：声明式事务默认只对运行时异常回滚,编译时异常不回滚,可以手动配置
             // a.出现运行时异常ArithmeticException会回滚,更新库存和更新余额皆失败
             // b.出现编译时异常FileNotFoundException不会回滚,更新库存和更新余额皆成功
-            rollbackFor = Exception.class, noRollbackFor = ArithmeticException.class
+            rollbackFor = Exception.class, noRollbackFor = ArithmeticException.class,
+
+            // 隔离级别：和ACID的持久性有关,读未提交、读已提交(Oracle默认)、可重复度(MySQL默认,且不会出现幻读)、串行化
+            isolation = Isolation.READ_COMMITTED
     )
     public void buyBook(int userId, int bookId) {
         try {
