@@ -6,6 +6,7 @@ import com.okccc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -58,7 +59,11 @@ public class UserServiceImpl implements UserService {
             rollbackFor = Exception.class, noRollbackFor = ArithmeticException.class,
 
             // 隔离级别：和ACID的持久性有关,读未提交、读已提交(Oracle默认)、可重复度(MySQL默认,且不会出现幻读)、串行化
-            isolation = Isolation.READ_COMMITTED
+            isolation = Isolation.READ_COMMITTED,
+
+            // 传播行为：当一个事务方法调用另一个事务方法时,要在被调用的子方法中指定事务如何传播
+            propagation = Propagation.REQUIRED  // 父方法有事务就加入,没有就自己新建(默认)
+//            propagation = Propagation.REQUIRES_NEW  // 不管父方法是否有事务,都会自己新建
     )
     public void buyBook(int userId, int bookId) {
         try {
@@ -80,6 +85,16 @@ public class UserServiceImpl implements UserService {
         // 验证事务回滚策略
 //        new FileInputStream("a.txt");  // 编译时异常
 //        System.out.println(1/0);  // 运行时异常
+    }
+
+    @Override
+    public void checkout(int userId, Integer[] bookIds) {
+        // 声明式事务也是通过代理实现,但是同一个类中的方法是由对象调用并不走代理,因此@Transactional不会被代理捕获,也就不产生事务传播行为
+        for (Integer bookId : bookIds) {
+            // @Transactional self-invocation (in effect, a method within the target object calling
+            // another method of the target object) does not lead to an actual transaction at runtime
+            buyBook(userId, bookId);
+        }
     }
 }
 

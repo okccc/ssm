@@ -84,6 +84,8 @@ public class SpringTest02 {
     @Test
     public void testTxByAnnotation() {
         // 基于注解的声明式事务
-        userController.buyBook(1, 1);
+//        userController.buyBook(1, 1);
+        // 测试事务属性：传播行为
+        userController.checkout(1, new Integer[]{1, 2});
     }
 }

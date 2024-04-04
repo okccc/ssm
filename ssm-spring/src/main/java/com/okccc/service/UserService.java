@@ -13,5 +13,9 @@ public interface UserService {
 
     List<User> queryAll();
 
+    // 买书
     void buyBook(int userId, int bookId);
+
+    // 结账
+    void checkout(int userId, Integer[] bookIds);
 }
