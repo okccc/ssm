@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 映射文件负责写crud,语句映射是mybatis魅力所在,相比jdbc节省了大量代码 -->
+<mapper namespace="com.okccc.mapper.UserMapper">
+    <!--
+        两个一致
+        1.mapper接口的全类名和映射文件的namespace保持一致
+        2.mapper接口的方法名和映射文件的sql语句的id保持一致
+    -->
+</mapper>
