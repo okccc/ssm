@@ -9,5 +9,52 @@
         两个一致
         1.mapper接口的全类名和映射文件的namespace保持一致
         2.mapper接口的方法名和映射文件的sql语句的id保持一致
+
+        标签属性
+        id：命名空间中的唯一标识
+        resultType：单表查询的结果类型
+        resultMap：多表查询的结果映射,处理"对一"或"对多"的映射关系(难点)
+        statementType：STATEMENT/PREPARED(默认)对应java.sql包下的Statement/PreparedStatement
+        useGeneratedKeys：表示当前添加功能使用自增主键,对用java.sql.Statement的getGeneratedKeys()方法
+        keyProperty：自增主键对应的实体类属性名,通常是id
+
+        MyBatis为java常用类型设置了类型别名
+        Integer: int、Integer | int: _int、_integer | Map: map | String: string
     -->
+
+    <!-- void insertUser01(User user); -->
+    <insert id="insertUser01" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user values(#{id},#{username},#{password},#{age},#{gender},#{email})
+    </insert>
+
+    <!-- void insertUser02(User02 user); -->
+    <insert id="insertUser02">
+        <!-- selectKey标签生成非自增列的主键值,BEFORE表示在insert语句之前执行 -->
+        <selectKey order="BEFORE" keyProperty="id" resultType="String">
+            select replace(uuid(),'-','')
+        </selectKey>
+        insert into t_user_uuid values(#{id},#{username},#{password},#{age},#{gender},#{email})
+    </insert>
+
+    <!-- void deleteUserById(int id); -->
+    <delete id="deleteUserById">
+        delete from t_user where id = #{id}
+    </delete>
+
+    <!-- void deleteUserByIds(String ids); -->
+    <delete id="deleteUserByIds">
+        <!-- Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Truncated incorrect DOUBLE value: '52, 53' -->
+        <!--        delete from t_user where id in (#{ids})-->
+        delete from t_user where id in (${ids})
+    </delete>
+
+    <!-- void updateUser01(@Param("username") String username, @Param("password")String password); -->
+    <update id="updateUser01">
+        update t_user set password = #{password} where username = #{username}
+    </update>
+
+    <!-- void updateUser02(Map<String, Object> map); -->
+    <update id="updateUser02">
+        update t_user set password = #{password}, age = #{age} where username = #{username}
+    </update>
 </mapper>
