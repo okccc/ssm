@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: okccc
@@ -76,5 +78,39 @@ public class MybatisTest {
         map.put("password", "ne");
         map.put("age", 20);
         userMapper.updateUser02(map);
+    }
+
+    @Test
+    public void testSelect() {
+        // 单表查询
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+        // 返回单个简单类型
+        int count = userMapper.getCount();
+        System.out.println(count);
+
+        // 返回单个实体类对象
+        User user01 = userMapper.getUserById(1);
+        System.out.println(user01);
+
+        // 返回多个实体类对象的列表
+        List<User> users = userMapper.getAllUser();
+        System.out.println(users);
+
+        // 将查询结果User实体类转换成Map集合
+        Map<String, Object> map01 = userMapper.getUserByIdToMap(1);
+        System.out.println(map01);
+        List<Map<String, Object>> list01 = userMapper.getAllUserToMap01();
+        System.out.println(list01);
+        Map<String, Object> map02 = userMapper.getAllUserToMap02();
+        System.out.println(map02);
+
+        // 模糊查询
+        List<User> list02 = userMapper.getUserByLike("g");
+        System.out.println(list02);
+
+        // 动态传入表名查询
+        List<User> list03 = userMapper.getByTableName("t_user");
+        System.out.println(list03);
     }
 }

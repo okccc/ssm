@@ -57,4 +57,45 @@
     <update id="updateUser02">
         update t_user set password = #{password}, age = #{age} where username = #{username}
     </update>
+
+    <!-- User getUserById(int id); -->
+    <select id="getUserById" resultType="com.okccc.pojo.User">
+        select * from t_user where id = #{id}
+    </select>
+
+    <!-- List<User> getAllUser(); -->
+    <select id="getAllUser" resultType="com.okccc.pojo.User">
+        select * from t_user
+    </select>
+
+    <!-- int getCount(); -->
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from t_user
+    </select>
+
+    <!-- Map<String,Object> getUserByIdToMap(int id); -->
+    <select id="getUserByIdToMap" resultType="java.util.Map">
+        select * from t_user where id = #{id}
+    </select>
+
+    <!-- List<Map<String, Object>> getAllUserToMap01(); -->
+    <select id="getAllUserToMap01" resultType="java.util.Map">
+        select * from t_user
+    </select>
+
+    <!-- Map<String, Object> getAllUserToMap02(); -->
+    <select id="getAllUserToMap02" resultType="java.util.Map">
+        select * from t_user
+    </select>
+
+    <!-- List<User> getUserByLike(String str); -->
+    <select id="getUserByLike" resultType="com.okccc.pojo.User">
+        <!--        select * from t_user where username like '%${str}%'-->
+        select * from t_user where username like "%"#{str}"%"
+    </select>
+
+    <!-- List<User> getByTableName(String tableName); -->
+    <select id="getByTableName" resultType="com.okccc.pojo.User">
+        select * from ${tableName}
+    </select>
 </mapper>

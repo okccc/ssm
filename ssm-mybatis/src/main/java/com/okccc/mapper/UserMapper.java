@@ -2,14 +2,16 @@ package com.okccc.mapper;
 
 import com.okccc.pojo.User;
 import com.okccc.pojo.User02;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * @Author: okccc
  * @Date: 2023/10/18 16:49:53
- * @Desc:
+ * @Desc: 单表查询
  *
  * idea设置mybatis核心配置文件和映射文件模板
  * Intellij IDEA - Settings - Editor - File and Code Templates - Files - mybatis-config & mybatis-mapper
@@ -54,4 +56,46 @@ public interface UserMapper {
      * Map类型参数
      */
     void updateUser02(Map<String, Object> map);
+
+    /**
+     * 返回单个简单类型
+     */
+    int getCount();
+
+    /**
+     * 返回单个实体类对象
+     */
+    User getUserById(int id);
+
+    /**
+     * 返回多个实体类对象
+     */
+    List<User> getAllUser();
+
+    /**
+     * 将返回的单个实体类对象装成Map集合,区别在于User类会返回所有字段而Map会过滤value=null的key
+     */
+    @MapKey("id")
+    Map<String,Object> getUserByIdToMap(int id);
+
+    /**
+     * 将返回的多个实体类对象封装成Map集合,有两种方法
+     * 1.将Mapper接口中方法的返回值设置为泛型为Map的List集合(常用)
+     * 2.将多个小Map放到一个大Map,由于Map放的是k-v对,所以要给小Map指定key,可以添加@MapKey注解将某个字段作为key
+     */
+    @MapKey("id")
+    List<Map<String, Object>> getAllUserToMap01();
+
+    @MapKey("id")
+    Map<String, Object> getAllUserToMap02();
+
+    /**
+     * 模糊查询
+     */
+    List<User> getUserByLike(String str);
+
+    /**
+     * 动态传入表名,比如普通用户表和vip用户表字段都是一样的,就要根据传入的表名查询相应数据
+     */
+    List<User> getByTableName(String tableName);
 }
