@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 映射文件负责写crud -->
+<mapper namespace="com.okccc.mapper.EmpMapper">
+    <!--
+        表中列名(emp_id)和实体类中属性名(empId)不一致,如何处理映射关系
+        单表查询开启驼峰自动映射 <setting name="mapUnderscoreToCamelCase" value="true"/>
+        多表查询还要设置映射范围 <setting name="autoMappingBehavior" value="FULL"/>,或者在resultMap标签通过id和result手动映射
+
+        id标签: 主键列和属性的映射关系
+        result标签: 普通列和属性的映射关系
+        association标签: 配置"对一"的关联关系,property是"一端"的属性名,javaType是"一端"的实体类类型
+        collection标签:  配置"对多"的关联关系,property是"多端"的属性名,ofType是"多端"的实体类类型
+        查询映射时只关注本次查询的属性,例如：根据empId查询员工和对应的部门,无需进一步关注部门中的员工集合,避免套娃
+
+        "对一"和"对多"都可以使用分步查询,延迟加载减少内存消耗
+    -->
+
+    <resultMap id="empMap" type="Emp">
+<!--        <id column="emp_id" property="empId"/>-->
+<!--        <result column="emp_name" property="empName"/>-->
+<!--        <result column="dept_id" property="deptId"/>-->
+        <!-- 方式1：直接关联 -->
+        <association property="dept" javaType="Dept">
+<!--            <id column="dept_id" property="deptId"/>-->
+<!--            <result column="dept_name" property="deptName"/>-->
+        </association>
+    </resultMap>
+    <!-- Emp getEmpByEmpId(Integer empId); -->
+    <select id="getEmpById" resultMap="empMap">
+        select * from t_emp a join t_dept b on a.dept_id = b.dept_id where a.emp_id = #{empId}
+    </select>
+
+    <resultMap id="empMapWithStep" type="Emp">
+<!--        <id column="emp_id" property="empId"/>-->
+<!--        <result column="emp_name" property="empName"/>-->
+        <result column="dept_id" property="deptId"/>
+        <!-- 方式2：分步查询(推荐) -->
+        <!-- property是"一端"的属性名,column是关联字段,select是引用的查询语句,fetchType是否覆盖核心配置文件开启的延迟加载eager(立即加载)/lazy(延迟加载) -->
+        <association property="dept" column="dept_id" select="getEmpByIdStepTwo" fetchType="lazy"/>
+    </resultMap>
+    <!-- Emp getEmpByIdStepOne(Integer empId); -->
+    <select id="getEmpByIdStepOne" resultMap="empMapWithStep">
+        select * from t_emp where emp_id = #{empId}
+    </select>
+
+    <!-- Dept getEmpByIdStepTwo(Integer deptId); -->
+    <select id="getEmpByIdStepTwo" resultType="com.okccc.pojo.Dept">
+        select * from t_dept where dept_id = #{deptId}
+    </select>
+</mapper>

@@ -1,6 +1,8 @@
 package com.okccc;
 
+import com.okccc.mapper.EmpMapper;
 import com.okccc.mapper.UserMapper;
+import com.okccc.pojo.Emp;
 import com.okccc.pojo.User;
 import com.okccc.pojo.User02;
 import org.apache.ibatis.io.Resources;
@@ -112,5 +114,22 @@ public class MybatisTest {
         // 动态传入表名查询
         List<User> list03 = userMapper.getByTableName("t_user");
         System.out.println(list03);
+    }
+
+    @Test
+    public void testGetEmpById() {
+        // 多表查询之"对一"
+        EmpMapper empMapper = sqlSession.getMapper(EmpMapper.class);
+
+        // 直接关联,执行了1条sql
+        // ==>  Preparing: select * from t_emp a join t_dept b on a.dept_id = b.dept_id where a.emp_id = ?
+        Emp emp01 = empMapper.getEmpById(1);
+        System.out.println(emp01);  // Emp(empId=1, empName=grubby, deptId=1, dept=Dept(deptId=1, deptName=A, empList=null))
+
+        // 分步查询,执行了2条sql
+        // ==>  Preparing: select * from t_emp where emp_id = ?
+        // ==>  Preparing: select * from t_dept where dept_id = ?
+        Emp emp02 = empMapper.getEmpByIdStepOne(1);
+        System.out.println(emp02);  // Emp(empId=1, empName=grubby, deptId=1, dept=Dept(deptId=1, deptName=A, empList=null))
     }
 }
