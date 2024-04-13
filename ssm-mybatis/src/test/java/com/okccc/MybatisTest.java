@@ -1,7 +1,9 @@
 package com.okccc;
 
+import com.okccc.mapper.DeptMapper;
 import com.okccc.mapper.EmpMapper;
 import com.okccc.mapper.UserMapper;
+import com.okccc.pojo.Dept;
 import com.okccc.pojo.Emp;
 import com.okccc.pojo.User;
 import com.okccc.pojo.User02;
@@ -131,5 +133,22 @@ public class MybatisTest {
         // ==>  Preparing: select * from t_dept where dept_id = ?
         Emp emp02 = empMapper.getEmpByIdStepOne(1);
         System.out.println(emp02);  // Emp(empId=1, empName=grubby, deptId=1, dept=Dept(deptId=1, deptName=A, empList=null))
+    }
+
+    @Test
+    public void testGetDeptById() {
+        // 多表查询之"对多"
+        DeptMapper deptMapper = sqlSession.getMapper(DeptMapper.class);
+
+        // 直接关联,执行了1条sql
+        // ==>  Preparing: select * from t_dept a join t_emp b on a.dept_id = b.dept_id where a.dept_id = ?
+        Dept dept01 = deptMapper.getDeptById(1);
+        System.out.println(dept01);  // Dept(deptId=1, deptName=A, empList=[Emp(empId=1, empName=grubby, deptId=1, dept=null)])
+
+        // 分步查询,执行了2条sql
+        // ==>  Preparing: select * from t_dept where dept_id = ?
+        // ==>  Preparing: select * from t_emp where dept_id = ?
+        Dept dept02 = deptMapper.getDeptByIdStepOne(1);
+        System.out.println(dept02);  // Dept(deptId=1, deptName=A, empList=[Emp(empId=1, empName=grubby, deptId=1, dept=null)])
     }
 }
