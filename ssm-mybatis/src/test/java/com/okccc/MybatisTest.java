@@ -1,12 +1,10 @@
 package com.okccc;
 
+import com.okccc.mapper.BookMapper;
 import com.okccc.mapper.DeptMapper;
 import com.okccc.mapper.EmpMapper;
 import com.okccc.mapper.UserMapper;
-import com.okccc.pojo.Dept;
-import com.okccc.pojo.Emp;
-import com.okccc.pojo.User;
-import com.okccc.pojo.User02;
+import com.okccc.pojo.*;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -17,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,5 +149,34 @@ public class MybatisTest {
         // ==>  Preparing: select * from t_emp where dept_id = ?
         Dept dept02 = deptMapper.getDeptByIdStepOne(1);
         System.out.println(dept02);  // Dept(deptId=1, deptName=A, empList=[Emp(empId=1, empName=grubby, deptId=1, dept=null)])
+    }
+
+    @Test
+    public void testDynamicSql() {
+        // 动态拼接sql
+        BookMapper bookMapper = sqlSession.getMapper(BookMapper.class);
+
+        // 批量添加
+        Book book01 = new Book(null, "java", 999.00, 100);
+        Book book02 = new Book(null, "python", 699.00, 100);
+        Book book03 = new Book(null, "sql", 299.00, 100);
+        bookMapper.insertBatch(Arrays.asList(book01, book02, book03));
+
+        // 批量修改
+        Book book04 = new Book(10, "scala", 699.00, 100);
+        Book book05 = new Book(11, "golang", 599.00, 100);
+        Book book06 = new Book(12, "ruby", 299.00, 100);
+        bookMapper.updateBatch(Arrays.asList(book04, book05, book06));
+
+        // 批量删除
+        bookMapper.deleteBatch(new Integer[]{21, 22, 23});
+
+        // 批量查询
+        System.out.println(bookMapper.selectBatch(new Integer[]{1, 2, 3}));
+
+        // 条件查询
+        System.out.println(bookMapper.getBookByWhere("java", 399.0));
+        System.out.println(bookMapper.getBookByTrim("java", 399.0));
+        System.out.println(bookMapper.getBookByChoose("java", 399.0));
     }
 }

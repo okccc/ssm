@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 映射文件负责写crud -->
+<mapper namespace="com.okccc.mapper.BookMapper">
+
+    <!--
+        mybatis动态拼接sql
+        if标签：条件满足就拼接到sql中,test属性访问的是实体类而不是数据库表
+        where标签(常用)：会自动去掉多余的and和or关键字
+        trim标签：通过prefix和suffix添加前后缀,prefixOverrides和suffixOverrides去掉前后缀
+        choose标签：when和otherwise相当于java的if...else if...else,其中when至少一个otherwise最多一个
+
+        foreach标签(常用)
+        collection属性：要遍历的集合,接口方法要给参数绑定@Param注解,不然报错 BindingException: Parameter 'bookList' not found.
+        item属性：集合中的具体元素
+        separator属性：拼接字符串的分隔符
+        open/close属性：拼接字符串以什么开始/结束
+    -->
+
+    <!-- void insertBatch(@Param("bookList") List<Book> bookList); -->
+    <insert id="insertBatch">
+        <!-- insert into t_book values (null, ?, ?, ?) , (null, ?, ?, ?) , (null, ?, ?, ?) -->
+        insert into t_book values
+        <!-- 批量插入是一条sql用逗号隔开 -->
+        <foreach collection="bookList" item="book" separator=",">
+            (null, #{book.bookName}, #{book.price}, #{book.stock})
+        </foreach>
+    </insert>
+
+    <!-- void updateBatch(@Param("bookList") List<Book> bookList); -->
+    <update id="updateBatch">
+        <!-- 批量修改是多条sql用分号隔开,一次性执行多条sql要给url添加?allowMultiQueries=true -->
+        <!-- update t_book set book_name = ?, price = ? where book_id = ? ; update t_book set book_name = ?, price = ? where book_id = ? ; update t_book set book_name = ?, price = ? where book_id = ? -->
+        <foreach collection="bookList" item="book" separator=";">
+            update t_book set book_name = #{book.bookName}, price = #{book.price} where book_id = #{book.bookId}
+        </foreach>
+    </update>
+
+    <!-- void deleteBatch(@Param("bookIds") Integer[] bookIds); -->
+    <delete id="deleteBatch">
+        <!-- Preparing: delete from t_book where book_id in ( ? , ? , ? ) -->
+        delete from t_book where book_id in
+        <foreach collection="bookIds" item="bookId" open="(" separator="," close=")">
+            #{bookId}
+        </foreach>
+    </delete>
+
+    <!-- List<Book> selectBatch(@Param("bookIds") Integer[] bookIds); -->
+    <select id="selectBatch" resultType="com.okccc.pojo.Book">
+        <!-- 方式1：select * from t_book where book_id in ( ? , ? , ? ) -->
+        select * from t_book where book_id in
+        <foreach collection="bookIds" item="bookId" open="(" separator="," close=")">
+            #{bookId}
+        </foreach>
+        <!-- 方式2：select * from t_book where book_id = ? or book_id = ? or book_id = ? -->
+<!--        select * from t_book where-->
+<!--        <foreach collection="bookIds" item="bookId" separator="or">-->
+<!--            book_id = #{bookId}-->
+<!--        </foreach>-->
+    </select>
+
+    <!-- sql片段：抽取重复使用的sql,在需要的地方通过include标签引用 -->
+    <sql id="selectBook">
+        select * from t_book
+    </sql>
+
+    <!-- List<Book> getBookByWhere(@Param("bookName") String bookName, @Param("price") Double price); -->
+    <select id="getBookByWhere" resultType="Book">
+        <include refid="selectBook"/>
+        <!--
+            两个条件都满足：where book_name = #{book_name} and price = #{price}
+            只有第一个满足：where book_name = #{book_name}
+            只有第二个满足：where price = #{price}
+        -->
+        <where>
+            <if test="bookName != null and bookName != ''">
+                book_name = #{bookName}
+            </if>
+            <if test="price != null and price &gt; 500">
+                and price > #{price}
+            </if>
+        </where>
+    </select>
+
+    <!-- List<Book> getBookByTrim(@Param("bookName") String bookName, @Param("price") Double price); -->
+    <select id="getBookByTrim" resultType="Book">
+        <include refid="selectBook"/>
+        <trim prefix="where" suffixOverrides="and|or">
+            <if test="bookName != null and bookName != ''">
+                book_name = #{bookName} and
+            </if>
+            <if test="price != null and price &gt; 500">
+                price > #{price}
+            </if>
+        </trim>
+    </select>
+
+    <!-- List<Book> getBookByChoose(@Param("bookName") String bookName, @Param("price") Double price); -->
+    <select id="getBookByChoose" resultType="Book">
+        <include refid="selectBook"/>
+        <where>
+            <choose>
+                <when test="bookName != null and bookName != ''">
+                    book_name = #{bookName}
+                </when>
+                <when test="price != null and price &gt; 500">
+                    price > #{price}
+                </when>
+            </choose>
+        </where>
+    </select>
+</mapper>
