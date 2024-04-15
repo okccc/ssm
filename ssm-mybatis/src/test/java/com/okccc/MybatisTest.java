@@ -1,9 +1,8 @@
 package com.okccc;
 
-import com.okccc.mapper.BookMapper;
-import com.okccc.mapper.DeptMapper;
-import com.okccc.mapper.EmpMapper;
-import com.okccc.mapper.UserMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.okccc.mapper.*;
 import com.okccc.pojo.*;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -178,5 +177,48 @@ public class MybatisTest {
         System.out.println(bookMapper.getBookByWhere("java", 399.0));
         System.out.println(bookMapper.getBookByTrim("java", 399.0));
         System.out.println(bookMapper.getBookByChoose("java", 399.0));
+    }
+
+    @Test
+    public void testPageHelper() {
+        /*
+         * 分页插件使用步骤：
+         * 1.pom.xml添加依赖
+         * 2.在mybatis核心配置文件配置<plugins>
+         *
+         * 分页相关数据
+         * PageInfo{
+         *     pageNum=1, pageSize=5, size=5, startRow=1, endRow=5, total=11, pages=3,
+         *     list=Page{count=true, pageNum=1, pageSize=5, startRow=0, endRow=5, total=11, pages=3, reasonable=false, pageSizeZero=false}
+         *     [Book(bookId=3, bookName=java, price=999.0, stock=100), Book(bookId=12, bookName=java, price=999.0, stock=100), ...],
+         *     prePage=0, nextPage=2, isFirstPage=true, isLastPage=false, hasPreviousPage=false, hasNextPage=true,
+         *     navigatePages=8, navigateFirstPage=1, navigateLastPage=3, navigatepageNums=[1, 2, 3]
+         * }
+         *
+         * pageNum：当前页码
+         * pageSize：每页显示条数
+         * size：当前页显示的真实条数
+         * total：总记录数
+         * pages：总页数
+         * prePage：上一页的页码
+         * nextPage：下一页的页码
+         * isFirstPage/isLastPage：是否为第一页/最后一页
+         * hasPreviousPage/hasNextPage：是否存在上一页/下一页
+         * navigatePages：导航分页的页码数
+         * navigatepageNums：导航分页的页码，[1, 2, 3]
+         */
+        BookMapper bookMapper = sqlSession.getMapper(BookMapper.class);
+        // 查询之前开启分页功能
+        PageHelper.startPage(1, 5);
+        // 查询数据列表
+        List<Book> list = bookMapper.getBookByWhere("java", 399.0);
+        // 将查询结果封装成PageInfo对象
+        PageInfo<Book> pageInfo = new PageInfo<>(list);
+        // 当前页数据
+        System.out.println(pageInfo.getList());
+        // 总页数
+        System.out.println(pageInfo.getPages());
+        // 总条数
+        System.out.println(pageInfo.getTotal());
     }
 }
