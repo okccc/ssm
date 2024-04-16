@@ -22,6 +22,11 @@
         Integer: int、Integer | int: _int、_integer | Map: map | String: string
     -->
 
+    <!-- mybatis自带的二级缓存 -->
+    <cache/>
+    <!-- mybatis整合ehcache的二级缓存(了解),后面ssm会有专门的缓存框架 -->
+<!--    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>-->
+
     <!-- void insertUser01(User user); -->
     <insert id="insertUser01" useGeneratedKeys="true" keyProperty="id">
         insert into t_user values(#{id},#{username},#{password},#{age},#{gender},#{email})

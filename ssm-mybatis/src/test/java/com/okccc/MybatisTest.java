@@ -221,4 +221,51 @@ public class MybatisTest {
         // 总条数
         System.out.println(pageInfo.getTotal());
     }
+
+    @Test
+    public void testCache() throws IOException {
+        /*
+         * 一级缓存是SqlSession级别(默认开启),即相同SqlSession查询的数据会被缓存
+         * 一级缓存失效情况
+         * 1.相同SqlSession的两次查询之间手动清空缓存
+         * 2.相同SqlSession的两次查询之间有增删改操作会自动清空缓存
+         *
+         * 二级缓存是SqlSessionFactory级别,即相同SqlSessionFactory查询的数据会被缓存
+         * 二级缓存开启条件
+         * 1.在核心配置文件添加配置<setting name="cacheEnabled" value="true"/>
+         * 2.在映射文件添加标签<cache/>
+         * 3.查询数据默认保存在一级缓存,只有在SqlSession提交或关闭后一级缓存的数据才会保存到二级缓存
+         * 4.查询数据转换成的实体类要实现序列化接口
+         * 二级缓存失效情况
+         * 两次查询之间有增删改操作会自动清空缓存,一级缓存和二级缓存同时失效
+         * 二级缓存之整合第三方EHCache
+         * pom.xml添加mybatis-ehcache依赖,映射文件添加<cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+         *
+         * 查询顺序：二级缓存 -> 一级缓存 -> 数据库
+         * 因为一个SqlSessionFactory可以包含多个SqlSession,所以二级缓存比一级缓存范围更大
+         * 查询数据时会先查二级缓存,因为二级缓存可能包含别的SqlSession已经查出来的数据,没命中再去查一级缓存,还没命中就去查数据库
+         */
+        InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+
+        SqlSession sqlSession01 = sqlSessionFactory.openSession(true);
+        UserMapper mapper01 = sqlSession01.getMapper(UserMapper.class);
+        System.out.println(mapper01.getUserById(1));
+        // 手动清空或执行增删改操作(自动清空)会导致一级缓存失效
+//        sqlSession01.clearCache();
+//        mapper01.insertUser01(new User(null, "tod", "hum", 19, "女", "hum@qq.com"));
+        System.out.println(mapper01.getUserById(1));
+
+        // sqlSession提交或关闭后一级缓存的数据才会保存到二级缓存
+//        sqlSession01.commit();
+        sqlSession01.close();
+        SqlSession sqlSession02 = sqlSessionFactory.openSession(true);
+        UserMapper mapper02 = sqlSession02.getMapper(UserMapper.class);
+        System.out.println(mapper02.getUserById(1));
+        // 这里清理的是一级缓存,此时已经有二级缓存了所以仍然能命中缓存
+        sqlSession02.clearCache();
+        // 执行增删改操作(自动清空)会导致一级缓存和二级缓存同时失效,此时就会去查询数据库
+//        mapper02.insertUser01(new User(null, "ted", "ud", 19, "男", "hum@qq.com"));
+        System.out.println(mapper02.getUserById(1));
+    }
 }
