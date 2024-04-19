@@ -1,0 +1,32 @@
+# 数据库连接信息
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/ssm?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true&allowMultiQueries=true
+      username: root
+      password: root@123
+
+
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+#    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 将执行sql的日志输出到控制台
+  # typeAliases
+  type-aliases-package: com.okccc.mapper
+  # mappers：输入mapper-locations发现已经有默认值,所以不用配
+  mapper-locations: classpath*:/mapper/**/*.xml
+  # 全局配置
+  global-config:
+    # 数据库配置
+    db-config:
+      # 给表名加默认前缀
+      table-prefix: t_
+      # 设置主键策略,auto/assign_id
+      id-type: auto
+      # 逻辑删除字段
+      logic-delete-field: deleted
+      logic-not-delete-value: 0  # 未删除
+      logic-delete-value: 1  # 已删除
