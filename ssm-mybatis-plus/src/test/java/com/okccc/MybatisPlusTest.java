@@ -1,5 +1,6 @@
 package com.okccc;
 
+import com.okccc.mapper.UserMapper;
 import com.okccc.pojo.User;
 import com.okccc.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -68,6 +70,50 @@ public class MybatisPlusTest {
     public void testRemove() {
         boolean b = userService.removeById(29L);
         System.out.println("b = " + b);
+    }
+
+    @Test
+    public void testMapper() {
+        System.out.println("=============== BaseMapper<User>通用CRUD ===============");
+    }
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Test
+    public void testSelect() {
+        // 根据id查询
+        User user = userMapper.selectById(1);
+        System.out.println("user = " + user);
+
+        // 根据id批量查询
+        List<User> users = userMapper.selectBatchIds(Arrays.asList(1, 2, 3));
+        System.out.println("users = " + users);
+
+        // 条件查询,不写条件默认查询全部
+        List<User> list = userMapper.selectList(null);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testInsert() {
+        // 插入数据 insert into t_user values(?, ?, ?, ?);
+        User user = new User(null, "moon", null, 21, null, "ne@qq.com");
+        int i = userMapper.insert(user);
+        System.out.println("i = " + i);
+    }
+
+    @Test
+    public void testUpdate() {
+        // 根据id修改,主键必须有值 update t_user set age = 25 where id = ?;
+        User user1 = new User();
+        user1.setId(1L);
+        // update操作不设置属性时就使用默认值null,表示不修改该字段
+        user1.setPassword(null);
+        // 所以age用的是包装类型Integer而不是基本类型int,因为int类型默认值是0,不设置的话会把所有age都改成0
+        user1.setAge(25);
+        int i1 = userMapper.updateById(user1);
+        System.out.println("i1 = " + i1);
     }
 
 }
