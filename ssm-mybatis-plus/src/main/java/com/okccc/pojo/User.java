@@ -24,6 +24,15 @@ import lombok.NoArgsConstructor;
  * UUID：随机生成一个不重复的字符串,算法复杂且字符串太长效率较低
  * 雪花算法：随机生成一个不重复的数字,实体类用Long或String,数据库用bigint或varchar,解决分布式系统中生成全局唯一id的需求
  *
+ * 3.@TableField
+ * 作用于非主键列,当实体类属性名和数据库列名不一致时添加该注解指定
+ *
+ * 4.@TableLogic
+ * alter table t_user add deleted int default 0;
+ * 逻辑删除,默认0表示未删除,执行删除操作时会将该属性修改为1,查询操作只查deleted=0的数据
+ * 添加逻辑删除前是DELETE操作 ==> Preparing: DELETE FROM t_user WHERE id=?
+ * 添加逻辑删除后是UPDATE操作 ==> Preparing: UPDATE t_user SET deleted=1 WHERE id=? AND deleted=0
+ *
  * CREATE TABLE `t_user` (
  *   `id` bigint(20) PRIMARY KEY NOT NULL,
  *   `username` varchar(20) DEFAULT NULL,
@@ -65,5 +74,20 @@ public class User {
     private String gender;
 
     private String email;
+
+    @TableLogic
+    private Integer deleted;
+
+    @Version
+    private Integer version;
+
+    public User(Long id, String username, String password, Integer age, String gender, String email) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.age = age;
+        this.gender = gender;
+        this.email = email;
+    }
 
 }

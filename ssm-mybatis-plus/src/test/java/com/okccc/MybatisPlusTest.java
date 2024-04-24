@@ -9,12 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * @Author: okccc
  * @Date: 2024/1/2 10:12:25
- * @Desc:
+ * @Desc: 条件构造器组装查询条件替代sql语句,Lambda表达式使用实体类属性而不是字符串来表示列名,提高代码可读性和维护性
  */
 //@SpringBootTest
 // Could not detect default configuration classes for test class [com.okccc.MybatisPlusTest]
@@ -114,6 +115,23 @@ public class MybatisPlusTest {
         user1.setAge(25);
         int i1 = userMapper.updateById(user1);
         System.out.println("i1 = " + i1);
+    }
+
+    @Test
+    public void testLogicDelete() {
+        // 根据id删除
+        int i1 = userMapper.deleteById(1);
+        System.out.println("i1 = " + i1);
+
+        // 根据id批量删除
+        int i2 = userMapper.deleteBatchIds(Arrays.asList(11, 12));
+        System.out.println("i2 = " + i2);
+
+        // 根据条件删除
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("age", 21);
+        int i3 = userMapper.deleteByMap(hashMap);
+        System.out.println("i3 = " + i3);
     }
 
 }
