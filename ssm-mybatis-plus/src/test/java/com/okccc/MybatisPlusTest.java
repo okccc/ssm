@@ -1,5 +1,6 @@
 package com.okccc;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.okccc.mapper.UserMapper;
 import com.okccc.pojo.User;
 import com.okccc.service.UserService;
@@ -94,6 +95,18 @@ public class MybatisPlusTest {
         // 条件查询,不写条件默认查询全部
         List<User> list = userMapper.selectList(null);
         list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testPage() {
+        // 分页查询
+        Page<User> page = new Page<>(1, 3);
+        userMapper.selectPage(page, null);
+        System.out.println(page.getTotal());  // 总条数
+        System.out.println(page.getPages());  // 总页数
+        System.out.println(page.getCurrent());  // 页码
+        System.out.println(page.getSize());  // 页容量
+        System.out.println(page.getRecords());  // 当前页数据
     }
 
     @Test

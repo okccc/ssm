@@ -1,6 +1,8 @@
 package com.okccc;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +27,9 @@ public class Main {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         // mybatis-plus插件合集
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+
+        // 分页插件
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
 
         return interceptor;
     }
