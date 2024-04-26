@@ -147,4 +147,19 @@ public class MybatisPlusTest {
         System.out.println("i3 = " + i3);
     }
 
+    @Test
+    public void testOptimisticLocker() {
+        // 先查询两次,此时version都是1
+        User user1 = userMapper.selectById(1L);
+        User user2 = userMapper.selectById(1L);
+
+        // 第一次修改,version + 1
+        user1.setAge(19);
+        userMapper.updateById(user1);
+
+        // 第二次修改时version已经变了,乐观锁生效,修改失败
+        user2.setAge(29);
+        userMapper.updateById(user2);
+    }
+
 }

@@ -33,6 +33,11 @@ import lombok.NoArgsConstructor;
  * 添加逻辑删除前是DELETE操作 ==> Preparing: DELETE FROM t_user WHERE id=?
  * 添加逻辑删除后是UPDATE操作 ==> Preparing: UPDATE t_user SET deleted=1 WHERE id=? AND deleted=0
  *
+ * 5.@Version
+ * alter table t_user add version int default 1;
+ * 乐观锁版本号,解决并发场景修改数据的安全问题,针对updateById(id)和update(entity,wrapper)
+ * 乐观锁和悲观锁是并发编程中处理并发访问和资源竞争的两种不同的锁机制
+ *
  * CREATE TABLE `t_user` (
  *   `id` bigint(20) PRIMARY KEY NOT NULL,
  *   `username` varchar(20) DEFAULT NULL,
