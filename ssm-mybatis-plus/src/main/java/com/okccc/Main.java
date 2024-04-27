@@ -2,6 +2,7 @@ package com.okccc;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
@@ -34,6 +35,9 @@ public class Main {
 
         // 乐观锁(版本号插件),mybatis-plus会在每次更新的时候,帮我们对比version字段然后+1
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+
+        // 防止全表删除和更新的拦截器
+        interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
 
         return interceptor;
     }

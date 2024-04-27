@@ -128,6 +128,13 @@ public class MybatisPlusTest {
         user1.setAge(25);
         int i1 = userMapper.updateById(user1);
         System.out.println("i1 = " + i1);
+
+        // 尝试全表更新：不写条件就更新全部(危险!!!),会被BlockAttackInnerInterceptor拦截器阻止
+        // Caused by: org.apache.ibatis.exceptions.PersistenceException: Error updating database.
+        // Cause: com.baomidou.mybatisplus.core.exceptions.MybatisPlusException: Prohibition of table update operation
+        User user2 = new User();
+        user2.setAge(30);
+        userMapper.update(user2, null);
     }
 
     @Test
@@ -145,6 +152,11 @@ public class MybatisPlusTest {
         hashMap.put("age", 21);
         int i3 = userMapper.deleteByMap(hashMap);
         System.out.println("i3 = " + i3);
+
+        // 尝试删库跑路：不写条件就删除全部(危险!!!),会被BlockAttackInnerInterceptor拦截器阻止
+        // Caused by: org.apache.ibatis.exceptions.PersistenceException: Error updating database.
+        // Cause: com.baomidou.mybatisplus.core.exceptions.MybatisPlusException: Prohibition of full table deletion
+        userMapper.delete(null);
     }
 
     @Test
