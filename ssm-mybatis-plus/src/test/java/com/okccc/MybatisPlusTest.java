@@ -1,10 +1,15 @@
 package com.okccc;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.okccc.mapper.UserMapper;
 import com.okccc.pojo.User;
 import com.okccc.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -172,6 +177,117 @@ public class MybatisPlusTest {
         // 第二次修改时version已经变了,乐观锁生效,修改失败
         user2.setAge(29);
         userMapper.updateById(user2);
+    }
+
+    @Test
+    public void testWrapper() {
+        System.out.println("=============== 条件构造器 ===============");
+    }
+
+    @Test
+    public void testSelectByQueryWrapper() {
+        // 创建QueryWrapper对象
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+
+        // 拼接查询条件：SELECT * FROM t_user WHERE (username LIKE ? AND age BETWEEN ? AND ? AND email IS NOT NULL) ORDER BY id ASC
+        queryWrapper.like("username", "gru");
+        queryWrapper.like(StringUtils.isNotBlank("username"), "username", "gru");
+        queryWrapper.between("age", 15, 30);
+        queryWrapper.isNotNull("email");
+        queryWrapper.orderByAsc("id");
+
+        // 默认查询所有列,也可以指定查询列
+        queryWrapper.select("id", "username", "email");
+
+        // 执行BaseMapper的selectList操作
+        List<User> list =  userMapper.selectList(queryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testSelectByLambdaQueryWrapper() {
+        // 创建LambdaQueryWrapper对象(推荐)
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        // 拼接查询条件：SELECT * FROM t_user WHERE (username LIKE ? AND age BETWEEN ? AND ? AND email IS NOT NULL) ORDER BY id ASC
+        lambdaQueryWrapper.like(User::getUsername, "gru");
+        lambdaQueryWrapper.between(User::getAge, 15, 30);
+        lambdaQueryWrapper.isNotNull(User::getEmail);
+        lambdaQueryWrapper.orderByAsc(User::getId);
+
+        // 默认查询所有列,也可以指定查询列
+        lambdaQueryWrapper.select(User::getId, User::getUsername, User::getEmail);
+
+        // 执行BaseMapper的selectList操作
+        List<User> list = userMapper.selectList(lambdaQueryWrapper);
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void testUpdateByQueryWrapper() {
+        // 拼接查询条件：UPDATE t_user SET age=? WHERE (username LIKE ? AND age > ? OR email IS NULL)
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("username", "gru");
+        queryWrapper.gt("age", 20);
+        queryWrapper.or().isNull("email");  // 条件拼接默认使用and语句,or语句要显示声明
+
+        // 使用QueryWrapper+实体类修改数据有个问题,无法将列值修改为null,于是引出UpdateWrapper
+        User user = new User();
+        user.setAge(29);
+        user.setGender(null);
+
+        // 执行BaseMapper的update操作
+        int i = userMapper.update(user, queryWrapper);
+        System.out.println("i = " + i);
+    }
+
+    @Test
+    public void testUpdateByUpdateWrapper() {
+        // 创建UpdateWrapper对象
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+
+        // 拼接查询条件：UPDATE t_user SET age=?,gender=? WHERE (username LIKE ? AND age > ? OR email IS NULL)
+        updateWrapper.like("username", "gru");
+        updateWrapper.gt("age", 20);
+        updateWrapper.or().isNull("email");
+
+        // 给属性赋值
+        updateWrapper.set("age", 29);
+        updateWrapper.set("gender", null);
+
+        // 执行BaseMapper的update操作
+        int i = userMapper.update(null, updateWrapper);
+        System.out.println("i = " + i);
+    }
+
+    @Test
+    public void testUpdateByLambdaUpdateWrapper() {
+        // 创建LambdaUpdateWrapper对象(推荐)
+        LambdaUpdateWrapper<User> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+
+        // 拼接查询条件：UPDATE t_user SET age=?,gender=? WHERE (username LIKE ? AND age > ? OR email IS NULL)
+        lambdaUpdateWrapper.like(User::getUsername, "gru");
+        lambdaUpdateWrapper.gt(User::getAge, 20);
+        lambdaUpdateWrapper.or().isNull(User::getEmail );
+
+        // 给属性赋值
+        lambdaUpdateWrapper.set(User::getAge, 30);
+        lambdaUpdateWrapper.set(User::getGender, null);
+
+        // 执行BaseMapper的update操作
+        int i = userMapper.update(null, lambdaUpdateWrapper);
+        System.out.println("i = " + i);
+    }
+
+    @Test
+    public void testDeleteByQueryWrapper() {
+        // 拼接查询条件：DELETE FROM t_user WHERE (gender IS NULL)
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.isNull(User::getGender);
+
+        // 执行BaseMapper的delete操作
+        int i = userMapper.delete(lambdaQueryWrapper);
+        System.out.println("i = " + i);
     }
 
 }
