@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	version="4.0">
+
+	<!-- SpringMVC是将原生Servlet封装成前端控制器DispatcherServlet统一处理请求和响应,所以它本质上还是一个Servlet -->
+	<servlet>
+		<servlet-name>DS</servlet-name>
+		<!-- 输入DispatcherServlet会自动提示,不用手写全路径 -->
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- DS初始化时要加载的SpringMVC核心配置文件的位置和名称 -->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<!-- classpath表示从类路径查找配置文件,包括src/main/java和src/main/resources -->
+			<param-value>classpath:springmvc.xml</param-value>
+		</init-param>
+		<!-- 作为框架的核心组件,DS初始化包含大量init操作(源码496行),放在第一次请求时才执行会严重影响访问速度,浏览器要转好几秒,所以将其提前到服务器启动时 -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>DS</servlet-name>
+		<!--
+            路径匹配/和/*的区别
+            /：匹配浏览器向服务器发送的所有请求(不包括.jsp,因为.jsp只有Tomcat的JspServlet才能处理,DispatcherServlet处理不了)
+            /*：匹配浏览器向服务器发送的所有请求(包括.jsp)
+        -->
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+</web-app>
