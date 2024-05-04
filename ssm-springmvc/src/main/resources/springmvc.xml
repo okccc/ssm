@@ -9,7 +9,4 @@
 
     <!-- 配置HandlerMapping(框架自动加载,可以省略) -->
     <bean id="handlerMapping" class="org.springframework.web.servlet.HandlerMapping" abstract="true"/>
-
-    <!-- 配置HandlerAdapter(框架自动加载,可以省略) -->
-    <bean id="handlerAdapter" class="org.springframework.web.servlet.HandlerAdapter" abstract="true"/>
 </beans>
