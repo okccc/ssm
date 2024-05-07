@@ -19,4 +19,17 @@
         源码分析：spring-webmvc包下的META-INF包下的spring.handlers - MvcNamespaceHandler 34行 - AnnotationDrivenBeanDefinitionParser 194/203/239/245/246行
     -->
     <mvc:annotation-driven/>
+
+    <!--
+        静态资源：浏览器直接访问,不需要在服务端做任何处理,包括css、js、img等
+        web.xml配置的DispatcherServlet的url-pattern是"/",表示前端发送的所有请求都由DS处理
+        DS会查找HandlerMapping将请求路径和请求映射进行匹配,但是静态资源并没有对应的@RequestMapping,所以返回404
+
+        配置默认Servlet处理静态资源
+        源码分析：spring-webmvc包下的META-INF包下的spring.handlers - MvcNamespaceHandler 35行 - DefaultServletHandlerBeanDefinitionParser 53行 - DefaultServletHttpRequestHandler 128行
+        DispatcherServlet(CEO)先找HandlerMapping(大秘书),没有再找defaultServletHandler(小秘书),直接转发路径查找项目下的静态资源
+
+        配置<mvc:default-servlet-handler/>的同时必须配置<mvc:annotation-driven/>,不然所有请求都只能被DefaultServlet处理
+    -->
+    <mvc:default-servlet-handler/>
 </beans>
