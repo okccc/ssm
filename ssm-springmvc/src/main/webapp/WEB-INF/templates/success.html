@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>success</h1>
+    <!-- 测试在.html页面动态获取共享域数据 -->
+    <p th:text="${requestData}" th:style="'color: red;font-size: 20px;font-weight: bold'"></p>
+    <p th:text="${session.sessionData}" th:style="'color: red;font-size: large;font-weight: bold'"></p>
+    <p th:text="${application.applicationData}" th:style="'color: red;font-size: medium;font-weight: bold'"></p>
+</body>
+</html>
