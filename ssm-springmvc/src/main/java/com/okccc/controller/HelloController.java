@@ -46,4 +46,13 @@ public class HelloController {
     public String hello() {
         return "success";
     }
+
+    // 测试异常处理,如果不处理异常页面会直接打印tomcat的异常报告,很不友好
+    // http://localhost:8088/springmvc/exception
+    @RequestMapping(value = "/exception")
+    public String exception() {
+        System.out.println(1/0);
+        return "success";
+    }
+
 }

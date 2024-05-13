@@ -52,4 +52,18 @@
             </bean>
         </property>
     </bean>
+
+    <!-- 配置异常解析器 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- 设置异常类型和跳转页面的逻辑视图 -->
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.Exception">error</prop>
+                <prop key="java.lang.ArithmeticException">error</prop>
+                <prop key="java.lang.NullPointerException">error</prop>
+            </props>
+        </property>
+        <!-- 设置在请求域中共享的异常信息的属性名 -->
+        <property name="exceptionAttribute" value="exception"/>
+    </bean>
 </beans>
