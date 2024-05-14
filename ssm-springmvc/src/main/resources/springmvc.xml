@@ -66,4 +66,21 @@
         <!-- 设置在请求域中共享的异常信息的属性名 -->
         <property name="exceptionAttribute" value="exception"/>
     </bean>
+
+    <bean id="myHandlerInterceptor" class="com.okccc.interceptor.MyHandlerInterceptor"/>
+
+    <!-- 添加拦截器 -->
+    <mvc:interceptors>
+        <!-- 默认拦截所有 -->
+        <!--        <ref bean="myHandlerInterceptor" />-->
+        <!-- 添加拦截路径 -->
+        <mvc:interceptor>
+            <!-- /*表示单层路径,/**表示所有路径 -->
+            <mvc:mapping path="/user/**"/>
+            <!-- 排除拦截路径 -->
+            <mvc:exclude-mapping path="/user/s?s/ant"/>
+            <!-- 指定拦截器 -->
+            <ref bean="myHandlerInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>
