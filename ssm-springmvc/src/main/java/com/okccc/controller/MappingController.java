@@ -1,8 +1,13 @@
 package com.okccc.controller;
 
+import com.okccc.pojo.User;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 /**
  * @Author: okccc
@@ -56,6 +61,35 @@ public class MappingController {
     @RequestMapping(value = "/s?s/ant")
     public String testWildcard() {
         return "success";
+    }
+
+    // 参数校验：表述层负责接收浏览器提交的数据,可以对请求数据进行检查,将错误数据隔绝在业务逻辑层之前
+    // 使用步骤：1.给实体类属性添加校验注解  2.给handler的实体类参数添加@Validated注解
+    // 不符合校验规则会直接向前端抛出异常很不友好,可使用BindingResult捕捉错误信息自定义返回结果,必须紧挨着实体类参数中间不能有其它参数
+    // http://localhost:8088/springmvc/user/register
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public Object register(@Validated User user, BindingResult bindingResult) {
+        /*
+         * 常用的实体类属性校验注解
+         * @AssertTrue                       标注值必须为true
+         * @AssertFalse                      标注值必须为false
+         * @Min(value)/@DecimalMin(value)    标注值必须>=value
+         * @Max(value)/@DecimalMax(value)    标注值必须<=value
+         * @Size(min, max)                   标注值必须在限定范围内
+         * @Digits(integer, fraction)        标注值必须是数字,且在可接受的范围内
+         * @Past                             标注值必须是日期类型,且是过去的
+         * @Future                           标注值必须是日期类型,且是将来的
+         * @Pattern(value)                   标注值必须符合指定的正则表达式
+         * @NotNull                          包装类型不为null
+         * @NotEmpty                         集合类型长度大于0
+         * @NotBlank                         字符串不为null且不为空
+         */
+        // 判断是否有信息绑定错误,可以自行处理
+        if (bindingResult.hasErrors()) {
+            return Objects.requireNonNull(bindingResult.getFieldError()).toString();
+        }
+        // 没有就正常处理业务
+        return user;
     }
 
 }
