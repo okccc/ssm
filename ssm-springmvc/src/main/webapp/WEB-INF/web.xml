@@ -4,6 +4,21 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 	version="4.0">
 
+	<!--
+        配置Spring监听器,在服务器启动时加载Spring配置文件,默认位置和名称/WEB-INF/applicationContext.xml
+        服务器三大组件执行顺序：监听器 -> 过滤器 -> Servlet
+        SpringMVC的IOC容器是在DispatcherServlet初始化时创建,而Controller依赖于Service所以Spring的IOC容器必须提前创建好
+        否则启动时报错NoSuchBeanDefinitionException: No qualifying bean of type 'com.okccc.service.HelloService'
+    -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- 自定义Spring配置文件的位置和名称 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring.xml</param-value>
+	</context-param>
+
 	<!-- 配置Spring编码过滤器,必须配置在其他过滤器前面,因为设置编码前不能获取其它请求参数否则编码无效 -->
 	<filter>
 		<filter-name>CharacterEncodingFilter</filter-name>
