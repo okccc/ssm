@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.okccc</groupId>
+    <artifactId>ssm-integration</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!-- pom表示不打包,是用来做继承和聚合的父工程 -->
+<!--    <packaging>pom</packaging>-->
+    <packaging>war</packaging>
+
+    <properties>
+        <!-- jdk版本 -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- spring部分 -->
+        <spring.version>6.0.11</spring.version>
+        <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
+        <jakarta.jakartaee-web-api.version>10.0.0</jakarta.jakartaee-web-api.version>
+
+        <!-- springmvc部分 -->
+        <jakarta.servlet.jsp.jstl-api.version>3.0.0</jakarta.servlet.jsp.jstl-api.version>
+        <jackson-databind.version>2.15.2</jackson-databind.version>
+        <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>
+
+        <!-- mybatis部分 -->
+        <mybatis.version>3.5.13</mybatis.version>
+        <mysql.version>8.0.28</mysql.version>
+        <pagehelper.version>5.3.2</pagehelper.version>
+
+        <!-- 整合部分 -->
+        <mybatis-spring.version>3.0.2</mybatis-spring.version>
+        <thymeleaf-spring6.version>3.1.2.RELEASE</thymeleaf-spring6.version>
+        <logback.version>1.4.12</logback.version>
+        <lombok.version>1.18.28</lombok.version>
+        <druid.version>1.2.20</druid.version>
+    </properties>
+
+    <dependencies>
+        <!-- ==================== spring相关依赖 ==================== -->
+        <!--
+            ioc & di
+                spring-context 6.0.11
+                jakarta.annotation-api 2.1.1
+            aop
+                spring-aspects 6.0.11
+            tx
+                spring-tx & spring-jdbc 6.0.11
+        -->
+        <!-- ioc & di -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- jsr-250注解,java提供的注解,spring提供了一个@Resource -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>${jakarta.annotation-api.version}</version>
+        </dependency>
+
+        <!-- aop -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- tx -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- ==================== springmvc相关依赖 ==================== -->
+        <!--
+            spring-webmvc 6.0.11
+            jakarta.jakartaee-web-api 10.0.0
+            jackson-databind 2.15.0
+            hibernate-validator & hibernate-validator-annotation-processor 8.0.0.Final
+        -->
+        <!-- webmvc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- springmvc6将ServletAPI由javax迁移到了jakarta,需要tomcat10+版本 -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <version>${jakarta.jakartaee-web-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- jackson处理json数据 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+
+        <!-- 校验注解实现 -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+
+        <!-- jsp需要依赖jstl -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>${jakarta.servlet.jsp.jstl-api.version}</version>
+        </dependency>
+
+        <!-- ==================== mybatis相关依赖 ==================== -->
+        <!--
+            mybatis 3.5.11
+            mysql 8.0.25
+            pagehelper 5.2.0
+        -->
+        <!-- mybatis核心 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+
+        <!-- MySQL驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+
+        <!-- 分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>${pagehelper.version}</version>
+        </dependency>
+
+        <!-- ==================== 整合第三方依赖 ==================== -->
+        <!-- 加载spring容器 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- Spring6整合Thymeleaf -->
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring6</artifactId>
+            <version>${thymeleaf-spring6.version}</version>
+        </dependency>
+
+        <!-- 业务层框架固定spring,但是持久层框架除了mybatis还有别的,所以是mybatis主动来整合spring -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${mybatis-spring.version}</version>
+        </dependency>
+
+        <!-- lombok可以简化JavaBean开发,需要在plugins里面安装 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <!-- druid连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
