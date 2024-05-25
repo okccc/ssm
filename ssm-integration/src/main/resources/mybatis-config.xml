@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--
+        mybatis核心配置文件中的标签必须按照指定顺序
+        properties - settings - typeAliases - typeHandlers - plugins - environments - mappers
+    -->
+
+    <!-- 引入属性文件,然后就可以在当前文件使用${key}获取value -->
+    <properties resource="jdbc.properties"/>
+
+    <!-- 全局配置,所有配置项都在org.apache.ibatis.session.Configuration类中 -->
+    <settings>
+        <!-- logback日志实现,SLF4J/LOG4J2/STDOUT_LOGGING -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- 将下划线映射成驼峰规则 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 设置映射范围,NONE/PARTIAL/FULL -->
+        <setting name="autoMappingBehavior" value="FULL"/>
+        <!-- 开启延迟加载,需要啥就查啥而不是一次性全部查出来,可以对比DEBUG信息执行的sql条数 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 开启缓存,可以对比DEBUG信息执行的sql次数 -->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <!-- 设置类型别名 -->
+    <typeAliases>
+<!--        <typeAlias type="com.okccc.pojo.User" alias="aaa"/>-->
+<!--        <typeAlias type="com.okccc.pojo.User"/>-->
+        <!-- 通过包设置类型别名,指定包下所有类型都拥有默认别名,即类名本身且不区分大小写 -->
+        <package name="com.okccc.pojo"/>
+    </typeAliases>
+    
+    <!-- 分页插件 -->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <property name="helperDialect" value="mysql"/>
+        </plugin>
+    </plugins>
+
+    <!-- 配置数据库连接,default指定默认环境 -->
+    <environments default="dev">
+        <!-- 具体数据库环境,prod/dev/test -->
+        <environment id="dev">
+            <!-- 事务管理器,JDBC(使用jdbc原生的事务管理方式)/MANAGED(被框架管理比如Spring) -->
+            <transactionManager type="JDBC"/>
+            <!-- 数据源,POOLED(使用数据库连接池)/UNPOOLED(不使用数据库连接池)/JNDI(使用上下文中的数据源) -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 引入映射文件,查看target/classes/com/okccc/mapper发现mapper接口和映射文件在同一个包下 -->
+    <mappers>
+        <!--
+            两个一致
+            1.mapper接口和映射文件所在的包保持一致,创建package是com.okccc.xxx,创建directory是com/okccc/xxx
+            2.mapper接口的名字和映射文件的名字保持一致
+        -->
+        <package name="com.okccc.mapper"/>
+    </mappers>
+
+</configuration>
